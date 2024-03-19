@@ -13,6 +13,7 @@ import { styled } from "@mui/system";
 import { useNavigate } from "react-router-dom";
 import { useCrypto } from "../Contexts/CryptoContext";
 import AuthModal from "./Authentication/AuthModal";
+import UserSidebar from "./Authentication/UserSidebar";
 
 const Title = styled(Typography)({
   flex: 1,
@@ -23,7 +24,7 @@ const Title = styled(Typography)({
 });
 function Header() {
   const navigate = useNavigate();
-  const { currency, setCurrency, symbol } = useCrypto(); // Use useCrypto hook to access context
+  const { currency, setCurrency, symbo, user } = useCrypto(); // Use useCrypto hook to access context
   const darkTheme = createTheme({
     palette: {
       primary: {
@@ -57,13 +58,13 @@ function Header() {
                   color: "white", // Dropdown icon color
                 },
               }}
-              value={currency}
+              value={currency}  
               onChange={(e) => setCurrency(e.target.value)}
             >
               <MenuItem value={"INR"}>₹ INR</MenuItem>
               <MenuItem value={"USD"}>$ USD</MenuItem>
             </Select>
-            <AuthModal/>
+            {user?<UserSidebar/>:<AuthModal/>}
           </Toolbar>
         </Container>
       </AppBar>

@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { CoinList } from "./config/api";
+import { CoinList } from "../components/config/api";
 import { useCrypto } from "../Contexts/CryptoContext";
 import {
   Container,

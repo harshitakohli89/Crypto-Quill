@@ -28,7 +28,7 @@ export default function SignUp({ handleClose }) {
           message: `Sign Up Successful. Welcome ${result.user.email}`,
           type: 'success'
         });
-        handleClose(); // Close the modal/dialog if required
+        handleClose(); 
       }
     } catch (error) {
       setAlert({
