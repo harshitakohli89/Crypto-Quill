@@ -2,7 +2,7 @@ import styled from '@emotion/styled'
 import React from 'react'
 
 const StyledButton = styled.span`
-  border: 1px solid gold;
+  border: 1px solid #0B60B0;
   border-radius: 5px;
   padding: 10px;
   padding-left: 20px;

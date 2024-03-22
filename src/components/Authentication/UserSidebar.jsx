@@ -24,7 +24,7 @@ const Profile = styled("div")({
   flexDirection: "column",
   alignItems: "center",
   gap: "20px",
-  height: "92%",
+  height: "100%",
 });
 
 const LogoutButton = styled(Button)({
@@ -53,7 +53,7 @@ const Watchlist = styled("div")({
   flexDirection: "column",
   alignItems: "center",
   gap: 12,
-  overflowY: "scroll",
+  overflowY: "auto", 
 });
 
 const Coin = styled("div")({
@@ -93,7 +93,7 @@ export default function UserSidebar() {
       message: "Logout Successfull !",
     });
 
-    toggleDrawer();
+    toggleDrawer("right", false); 
   };
 
   const removeFromWatchlist = async (coin) => {
@@ -107,7 +107,7 @@ export default function UserSidebar() {
 
       setAlert({
         open: true,
-        message: `${coin.name} Removed from the Watchlist !`,
+        message: `${coin?.name} Removed from the Watchlist !`,
         type: "success",
       });
     } catch (error) {
@@ -161,6 +161,7 @@ export default function UserSidebar() {
                   <span style={{ fontSize: 15, textShadow: "0 0 5px black" }}>
                     Watchlist
                   </span>
+
                   {coins &&
                     coins.length > 0 &&
                     coins.map((coin) => {

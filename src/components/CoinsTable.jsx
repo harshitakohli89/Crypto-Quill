@@ -88,7 +88,7 @@ function CoinsTable() {
           label="Search for a Crypto Currency.."
           variant="outlined"
           sx={{
-            marginBottom: 20,
+            marginBottom: 5,
             width: "100%",
             "& .MuiInputLabel-root": {
               color: "white", // Change the label text color to white

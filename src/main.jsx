@@ -6,9 +6,7 @@ import { CryptoProvider } from './Contexts/CryptoContext.jsx'
 import 'react-alice-carousel/lib/alice-carousel.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
     <CryptoProvider>
     <App />
     </CryptoProvider>
-  </React.StrictMode>,
 )

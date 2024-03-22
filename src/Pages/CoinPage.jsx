@@ -6,13 +6,15 @@ import { SingleCoin } from "../components/config/api";
 import Coininfo from "../components/Coininfo";
 import styled from "@emotion/styled";
 import { Box } from "@mui/system";
-import { LinearProgress, Typography, useTheme } from "@mui/material";
+import { Button, LinearProgress, Typography, useTheme } from "@mui/material";
 import { numberWithCommas } from "../components/Banner/Carousel";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../Firebase";
 
 function CoinPage() {
   const { id } = useParams();
   const [coin, setCoin] = useState(null);
-  const { currency, symbol } = useCrypto();
+  const { currency, symbol, user, watchlist, setAlert } = useCrypto();
   const theme = useTheme();
 
   const fetchCoins = async () => {
@@ -70,6 +72,8 @@ width:"100%",
 ${theme.breakpoints.down("md")} {
   display:"flex",
   justifyContent:"space-around",
+  flexDirection: "column",
+  alignItems: "center",
 },
 ${theme.breakpoints.down("sm")} {
   flexDirection:"column",
@@ -80,8 +84,58 @@ ${theme.breakpoints.down("xs")} {
 }
 `;
 
+const inWatchlist = watchlist.includes(coin?.id);
 
-  if (!coin) return <LinearProgress style={{ backgroundColor: "0B60B0" }} />;
+const addToWatchlist =async()=>{
+  const coinRef = doc(db, "watchlist", user.uid)
+
+  try {
+    await setDoc(coinRef,
+      {coins:watchlist?[...watchlist,coin?.id]:[coin?.id],
+      });
+
+      setAlert({
+        open:true,
+        message: `${coin.name} Added to the Watchlist`,
+        type: "success",
+      });
+  } catch (error) {
+    setAlert({
+      open:true,
+      message: error.message,
+      type:"error",
+    });
+  }
+};
+
+
+const  removeFromWatchlist = async() =>{
+  const coinRef = doc(db, "watchlist", user.uid)
+
+  try {
+    await setDoc(
+      coinRef,
+      {
+        coins: watchlist.filter((watch)=>watch!== coin?.id),
+      },
+      {merge:"true"}
+      );
+
+      setAlert({
+        open:true,
+        message: `${coin.name} Remove From the Watchlist !!`,
+        type: "success",
+      });
+  } catch (error) {
+    setAlert({
+      open:true,
+      message: error.message,
+      type:"error",
+    });
+  }
+}
+
+  if (!coin) return <LinearProgress style={{ backgroundColor: "#0B60B0" }} />;
 
   return (
     <DivContainer>
@@ -127,6 +181,19 @@ ${theme.breakpoints.down("xs")} {
               M
             </Typography>
           </span>
+
+          {user && (
+            <Button
+            variant="outlined"
+            style={{
+              width:"100%",
+              height:40,
+              backgroundColor:inWatchlist?"#ff0000":"#0B60B0",
+              color: "white"
+            }}
+            onClick={inWatchlist? removeFromWatchlist:addToWatchlist}>
+              {inWatchlist?"Remove From Watchlist": "Add to Watchlist"}</Button>
+          ) }
         </MarketData>
       </DivSidebar>
       <Coininfo coin={coin} />

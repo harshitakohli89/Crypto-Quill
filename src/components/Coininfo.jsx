@@ -8,6 +8,25 @@ import styled from "@emotion/styled";
 import { Line } from "react-chartjs-2";
 import SelectButton from "./SelectButton";
 import { chartDays } from "./config/data";
+import {
+  Chart,
+  CategoryScale,
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  Title,
+} from "chart.js";
+
+Chart.register(
+  CategoryScale,
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  Title
+);
+
 
 const darkTheme = createTheme({
   palette: {
@@ -27,6 +46,7 @@ function Coininfo({ coin }) {
   const fetchHistoricalData = async () => {
     const { data } = await axios.get(HistoricalChart(coin.id, days, currency));
     setHistoricData(data.prices);
+    setFlag(true)
   };
 
   useEffect(() => {
@@ -46,56 +66,64 @@ function Coininfo({ coin }) {
   return (
     <ThemeProvider theme={darkTheme}>
       <DivContainer>
-        {historicData && flag && (
-          <Line
-            data={{
-              labels: historicData.map((coin) => {
-                let date = new Date(coin[0]);
-                let time =
-                  date.getHours() > 12
-                    ? `${date.getHours() - 12}:${date.getMinutes()} PM`
-                    : `${date.getHours()}:${date.getMinutes()} AM`;
-                return days === 1 ? time : date.toLocaleDateString();
-              }),
-
-              datasets: [
-                {
-                  data: historicData.map((coin) => coin[1]),
-                  label: `Price ( Past ${days} Days ) in ${currency}`,
-                  borderColor: "#0B60B0",
-                },
-              ],
-            }}
-            options={{
-              elements: {
-                point: {
-                  radius: 1,
-                },
-              },
-            }}
+        {!historicData || flag === false ? ( 
+          <CircularProgress
+            style={{ color: "#0B60B0" }}
+            size={250}
+            thickness={1}
           />
-        )}
-        <div
-          style={{
-            display: "flex",
-            marginTop: 20,
-            justifyContent: "space-around",
-            width: "100%",
-          }}
-        >
-          {chartDays.map((day) => (
-            <SelectButton
-              key={day.value}
-              onClick={() => {
-                setDays(day.value);
-                setFlag(false);
+        ) : (
+          <>
+            <Line
+              data={{
+                labels: historicData.map((coin) => {
+                  let date = new Date(coin[0]);
+                  let time =
+                    date.getHours() > 12
+                      ? `${date.getHours() - 12}:${date.getMinutes()} PM`
+                      : `${date.getHours()}:${date.getMinutes()} AM`;
+                  return days === 1 ? time : date.toLocaleDateString();
+                }),
+
+                datasets: [
+                  {
+                    data: historicData.map((coin) => coin[1]),
+                    label: `Price ( Past ${days} Days ) in ${currency}`,
+                    borderColor: "#0B60B0",
+                  },
+                ],
               }}
-              selected={day.value === days}
+              options={{
+                elements: {
+                  point: {
+                    radius: 1,
+                  },
+                },
+              }}
+            />
+            <div
+              style={{
+                display: "flex",
+                marginTop: 20,
+                justifyContent: "space-around",
+                width: "100%",
+              }}
             >
-              {day.label}
-            </SelectButton>
-          ))}
-        </div>
+              {chartDays.map((day) => (
+                <SelectButton
+                  key={day.value}
+                  onClick={() => {
+                    setDays(day.value);
+                    setFlag(false);
+                  }}
+                  selected={day.value === days}
+                >
+                  {day.label}
+                </SelectButton>
+              ))}
+            </div>
+          </>
+        )}
       </DivContainer>
     </ThemeProvider>
   );
