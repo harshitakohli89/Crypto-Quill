@@ -2,6 +2,8 @@ import { onAuthStateChanged } from "firebase/auth";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "../Firebase";
 import { doc, onSnapshot } from "firebase/firestore";
+import axios from "axios";
+import { CoinList } from "../components/config/api";
 
 const CryptoContext = createContext({
   currency: "INR",
@@ -26,8 +28,11 @@ export const CryptoProvider = ({ children }) => {
     message: "",
     type: "success",
   });
-
+  
   const [watchlist, setWatchlist] = useState([]);
+  const [coins, setCoins] = useState([]);
+  const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     if (user) {
@@ -55,9 +60,18 @@ export const CryptoProvider = ({ children }) => {
     });
   }, []);
 
+  const fetchCoins = async () => {
+    setLoading(true);
+    const { data } = await axios.get(CoinList(currency));
+
+    setCoins(data);
+    setLoading(false);
+  };
+
   useEffect(() => {
     if (currency === "INR") setSymbol("₹");
     else if (currency === "USD") setSymbol("$");
+    fetchCoins();
   }, [currency]);
 
   return (
@@ -71,6 +85,8 @@ export const CryptoProvider = ({ children }) => {
         alert,
         setAlert,
         watchlist,
+        coins,
+        loading,
       }}
     >
       {children}
