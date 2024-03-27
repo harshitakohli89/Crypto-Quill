@@ -37,7 +37,7 @@ function Banner() {
               fontWeight: 'bold',
               marginBottom: 10,
               fontFamily: 'Montserrat',
-              paddingTop:"10rem",
+              paddingTop:"10px",
             }}
           >
             Crypto Quill
